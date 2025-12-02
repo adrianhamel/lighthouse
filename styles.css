@@ -1,0 +1,363 @@
+/* Overall layout */
+body.bnet-body {
+  margin: 0;
+  padding: 0;
+  font-family: "Verdana", "Tahoma", sans-serif;
+  background: #000000;
+  color: #c7e8ff;
+  overflow-x: hidden;
+}
+
+/* Fake starfield background */
+.starfield {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0, transparent 3px),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.3) 0, transparent 3px),
+    radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.25) 0, transparent 3px),
+    radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.2) 0, transparent 3px),
+    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.25) 0, transparent 3px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bnet-frame {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 8px 10px 12px;
+  background: linear-gradient(135deg, #001020 0%, #000000 40%, #001b33 100%);
+  border: 2px solid #00a0ff;
+  box-shadow: 0 0 20px rgba(0, 160, 255, 0.6);
+  box-sizing: border-box;
+}
+
+.bnet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #007ad1;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.bnet-logo {
+  font-family: "Impact", "Arial Black", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #75d5ff;
+  text-shadow: 0 0 6px #00c3ff, 0 0 12px #00c3ff;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.bnet-logo.small {
+  font-size: 22px;
+}
+
+.bnet-logo-top {
+  display: block;
+}
+
+.bnet-logo-bottom {
+  display: block;
+  margin-top: -4px;
+}
+
+.bnet-tagline {
+  text-align: right;
+  font-size: 11px;
+  color: #b0e4ff;
+}
+
+.tiny-text {
+  font-size: 9px;
+  color: #7ab6e0;
+}
+
+.blink-slow {
+  animation: blink 1.3s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.2; }
+}
+
+.bnet-main {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 8px;
+}
+
+.bnet-main-single {
+  grid-template-columns: 250px 1fr;
+}
+
+.bnet-nav {
+  background: linear-gradient(180deg, #001329 0%, #000b14 100%);
+  border: 1px solid #005b9b;
+  padding: 8px;
+  font-size: 11px;
+}
+
+.nav-title {
+  font-weight: bold;
+  color: #ffe49c;
+  margin-bottom: 4px;
+}
+
+.nav-list,
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px;
+}
+
+.nav-item {
+  padding: 2px 0;
+  color: #c7e8ff;
+}
+
+.nav-item.selected {
+  background: rgba(0, 160, 255, 0.2);
+  border-left: 2px solid #00a0ff;
+  padding-left: 4px;
+}
+
+.nav-links li {
+  margin: 2px 0;
+}
+
+.nav-links a {
+  color: #7ad4ff;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+.nav-divider {
+  border-top: 1px solid #00416f;
+  margin: 6px 0;
+}
+
+.nav-blurb {
+  font-size: 10px;
+  color: #96c3e3;
+  margin: 4px 0 0;
+}
+
+.bnet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.content-window {
+  background: radial-gradient(circle at top left, #00284a 0, #000914 55%, #000000 100%);
+  border: 1px solid #0075bf;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+.content-window.secondary {
+  background: radial-gradient(circle at top left, #001b33 0, #000611 60%, #000000 100%);
+}
+
+.content-titlebar {
+  background: linear-gradient(90deg, #003d72 0%, #00172b 70%, #000105 100%);
+  border-bottom: 1px solid #000000;
+  padding: 3px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #ffffff;
+}
+
+.content-titlebar.small {
+  font-size: 10px;
+}
+
+.title-text {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.window-buttons {
+  font-size: 9px;
+  color: #c7e8ff;
+}
+
+.window-buttons .btn {
+  display: inline-block;
+  padding: 0 4px;
+  margin-left: 2px;
+  border: 1px solid #004b7f;
+  background: #001020;
+}
+
+.content-inner {
+  padding: 8px 10px;
+  font-size: 11px;
+}
+
+/* Chat area */
+.content-chat {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 260px;
+}
+
+.chat-log {
+  flex: 1;
+  padding: 6px 8px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.65);
+  font-family: "Lucida Console", "Consolas", monospace;
+  font-size: 11px;
+}
+
+.chat-system {
+  color: #ffd77a;
+}
+
+.chat-msg {
+  margin: 1px 0;
+}
+
+.user {
+  color: #7ad4ff;
+}
+
+.user-op {
+  color: #6effb8;
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #003b69;
+  padding: 4px 6px;
+  background: #000814;
+}
+
+.input-label {
+  font-family: "Lucida Console", monospace;
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.chat-input {
+  flex: 1;
+  background: #000000;
+  border: 1px solid #0075bf;
+  color: #c7e8ff;
+  font-family: "Lucida Console", monospace;
+  font-size: 11px;
+  padding: 2px 3px;
+}
+
+.chat-send-btn {
+  margin-left: 4px;
+  background: #002f54;
+  border: 1px solid #0075bf;
+  color: #c7e8ff;
+  font-size: 10px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.chat-send-btn:hover {
+  background: #004374;
+}
+
+/* Lists */
+.patch-list,
+.ladder-list,
+.sys-reqs {
+  padding-left: 16px;
+  margin: 4px 0;
+}
+
+.patch-version {
+  color: #ffe49c;
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.ladder-name {
+  color: #7ad4ff;
+  font-weight: bold;
+}
+
+.article-body p {
+  margin: 4px 0 8px;
+}
+
+.article-body ul {
+  margin: 4px 0 8px;
+  padding-left: 18px;
+}
+
+.article-body li {
+  margin: 2px 0;
+}
+
+.legacy-quote {
+  font-style: italic;
+  color: #9ed4ff;
+  border-left: 2px solid #007ad1;
+  padding-left: 8px;
+  margin-top: 6px;
+}
+
+.bnet-footer {
+  margin-top: 10px;
+  border-top: 1px solid #00416f;
+  padding-top: 4px;
+  font-size: 9px;
+  color: #7ab6e0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-note {
+  color: #5189b5;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .bnet-main,
+  .bnet-main-single {
+    grid-template-columns: 1fr;
+  }
+
+  .bnet-frame {
+    margin: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .bnet-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .bnet-tagline {
+    text-align: left;
+  }
+
+  .content-chat {
+    height: 220px;
+  }
+}
+
+

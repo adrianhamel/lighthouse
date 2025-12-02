@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build and Test (Node.js)
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Use latest LTS (22.x) – add more versions here if you want to test a matrix
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Run tests
+        run: npm test
+
+  accessibility:
+    name: Accessibility (Pa11y)
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Pa11y and wait-on
+        run: |
+          npm install -g pa11y wait-on
+
+      - name: Start application
+        run: npm start &
+
+      - name: Wait for application to be ready
+        run: wait-on http://localhost:3000
+
+      - name: Run accessibility tests
+        run: pa11y http://localhost:3000 --reporter cli
+
+  cypress:
+    name: Browser Tests (Cypress)
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start application
+        run: npm start &
+
+      - name: Wait for application to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Cypress tests
+        run: npx cypress run
+
+  lighthouse:
+    name: Lighthouse Audit
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install Lighthouse and wait-on
+        run: |
+          npm install -g lighthouse wait-on
+
+      - name: Start application
+        run: npm start &
+
+      - name: Wait for application to be ready
+        run: wait-on http://localhost:3000
+
+      - name: Run Lighthouse audit
+        run: |
+          mkdir -p lighthouse-results
+          lighthouse http://localhost:3000 --emulated-form-factor=mobile \
+            --output html \
+            --output-path "lighthouse-results/lighthouse-report-${{ github.run_number }}.html" \
+            --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage --ignore-certificate-errors --disable-features=IsolateOrigins,site-per-process"
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-${{ github.run_number }}
+          path: lighthouse-results/
