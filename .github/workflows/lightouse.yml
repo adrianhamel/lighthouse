@@ -74,6 +74,30 @@ jobs:
             --output-path "lighthouse/lighthouse-report-${{ github.run_number }}.html" \
             --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage --ignore-certificate-errors --disable-features=IsolateOrigins,site-per-process"
 
+      - name: Update README with latest Lighthouse link
+        env:
+          REPORT_NUMBER: ${{ github.run_number }}
+        run: |
+          python - <<'PY'
+          import pathlib, os, re
+
+          path = pathlib.Path("README.md")
+          report_url = f"https://adrianhamel.github.io/lighthouse/lighthouse/lighthouse-report-{os.environ['REPORT_NUMBER']}.html"
+          pattern = r"https://adrianhamel\.github\.io/lighthouse/lighthouse/lighthouse-report-\d+\.html"
+
+          if path.exists():
+              text = path.read_text()
+          else:
+              text = ""
+
+          if re.search(pattern, text):
+              text = re.sub(pattern, report_url, text)
+          else:
+              text = "# lighthouse\n\nLatest Lighthouse report: " + report_url + "\n"
+
+          path.write_text(text)
+          PY
+
       - name: Commit Lighthouse report to repo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
