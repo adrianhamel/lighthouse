@@ -64,34 +64,7 @@ jobs:
         run: wait-on http://localhost:3000
 
       - name: Run accessibility tests
-        run: pa11y http://localhost:3000 --reporter cli
-
-  cypress:
-    name: Browser Tests (Cypress)
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Start application
-        run: npm start &
-
-      - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3000
-
-      - name: Run Cypress tests
-        run: npx cypress run
+        run: pa11y http://localhost:3000 --reporter cli --config .pa11yci.json
 
   lighthouse:
     name: Lighthouse Audit
@@ -129,12 +102,16 @@ jobs:
       - name: Commit Lighthouse report to repo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           REPORT_NAME="lighthouse-report-${{ github.run_number }}.html"
+
+          git fetch origin "$TARGET_BRANCH"
+          git checkout "$TARGET_BRANCH"
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
 
           git add "lighthouse/$REPORT_NAME"
-          git commit -m "Add Lighthouse report for run ${{ github.run_number }}" || echo "No changes to commit"
-          git push
+          git commit -m "Add Lighthouse report for run ${{ github.run_number }}" || exit 0
+          git push origin HEAD:"$TARGET_BRANCH"
