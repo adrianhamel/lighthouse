@@ -60,9 +60,15 @@ jobs:
       - name: Wait for application to be ready
         run: wait-on http://localhost:3000
 
+      - name: Prepare lighthouse directory
+        run: |
+          if [ -d lighthouse ]; then
+            rm -f lighthouse/*.html || true
+          fi
+          mkdir -p lighthouse
+
       - name: Run Lighthouse audit
         run: |
-          mkdir -p lighthouse
           lighthouse http://localhost:3000 --emulated-form-factor=mobile \
             --output html \
             --output-path "lighthouse/lighthouse-report-${{ github.run_number }}.html" \
@@ -81,6 +87,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
 
-          git add "lighthouse/$REPORT_NAME"
+          git add lighthouse/
           git commit -m "Add Lighthouse report for run ${{ github.run_number }}" || exit 0
           git push origin HEAD:"$TARGET_BRANCH"
