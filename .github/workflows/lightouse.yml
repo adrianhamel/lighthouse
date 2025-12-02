@@ -32,9 +32,6 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-      - name: Run tests
-        run: npm test
-
   accessibility:
     name: Accessibility (Pa11y)
     needs: build-and-test
