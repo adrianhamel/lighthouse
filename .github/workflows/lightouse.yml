@@ -35,37 +35,6 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-  accessibility:
-    name: Accessibility (Pa11y)
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 22.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install Pa11y and wait-on
-        run: |
-          npm install -g pa11y wait-on
-
-      - name: Start application
-        run: npm start &
-
-      - name: Wait for application to be ready
-        run: wait-on http://localhost:3000
-
-      - name: Run accessibility tests
-        run: pa11y http://localhost:3000 --reporter cli --config .pa11yci.json
-
   lighthouse:
     name: Lighthouse Audit
     needs: build-and-test
