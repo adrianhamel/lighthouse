@@ -61,7 +61,10 @@ jobs:
         run: wait-on http://localhost:3000
 
       - name: Run accessibility tests
-        run: pa11y http://localhost:3000 --reporter cli
+        run: >
+          pa11y http://localhost:3000
+          --reporter cli
+          --chrome-launch-flags="--no-sandbox --disable-setuid-sandbox"
 
   cypress:
     name: Browser Tests (Cypress)
@@ -128,5 +131,3 @@ jobs:
         with:
           name: lighthouse-report-${{ github.run_number }}
           path: lighthouse-results/
-
-          
